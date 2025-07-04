@@ -1,0 +1,70 @@
+﻿@page "/counter"
+@using System.Diagnostics.CodeAnalysis
+@using Microsoft.AspNetCore.Mvc
+@using Microsoft.SemanticKernel
+@using Microsoft.SemanticKernel.ChatCompletion
+@using Microsoft.SemanticKernel.Connectors.Ollama
+@rendermode InteractiveServer
+@inject IChatCompletionService chatCompletionService
+@inject Kernel kernel
+
+<PageTitle>Counter</PageTitle>
+
+<h1>Hotel - booking</h1>
+
+<label>Input</label>
+<br />
+<input style="width: 500px;" @bind="UserInput" type="text" />
+<br />
+<label>Resposta</label>
+<br />
+<textarea style="width: 600px; height: 500px;" @bind="Result"></textarea>
+<br />
+
+<button class="btn btn-primary" @onclick="IncrementCount">Enviar</button>
+<button class="btn btn-primary" @onclick="ClearHistory">Limpar chat</button>
+
+@code {
+    
+    public string UserInput { get; set; }
+    public string Result { get; set; }
+    
+    const string promtpSystemMessage = @"Você é um assistente virtual de um hotel";
+
+    const string promptAssistentMessage = @" Você ajuda os hóspedes com:
+                                       * Fazer reservas de um quarto, ao reservar um quarto responder com: 'Reserva feita com sucesso'. 
+                                       * Verificar disponibilidade de quartos a qualquer momento, sempre exibir a lista apenas dos quartos disponíveis. 
+                                       * Cancelar reserva, ao cancelar retornar: 'Cancelado com sucesso'";
+    
+    ChatHistory chatHistory = [
+        new ChatMessageContent(AuthorRole.System, promtpSystemMessage), 
+        new ChatMessageContent(AuthorRole.Assistant, promptAssistentMessage)
+    ];
+    
+    private async Task IncrementCount()
+    {
+        
+        #pragma warning disable SKEXP0070
+        
+        var settings = new OllamaPromptExecutionSettings { FunctionChoiceBehavior = FunctionChoiceBehavior.Auto() };
+        
+        
+        chatHistory.AddUserMessage(UserInput);
+        var result = await chatCompletionService.GetChatMessageContentAsync(chatHistory, settings, kernel: kernel);
+
+        Result = result.Content;
+        
+        Console.WriteLine(UserInput);
+   }
+
+    private void ClearHistory()
+    {
+        chatHistory.Clear();
+        chatHistory = [
+            new ChatMessageContent(AuthorRole.System, promtpSystemMessage), 
+            new ChatMessageContent(AuthorRole.Assistant, promptAssistentMessage)
+        ];
+
+    }
+
+}
