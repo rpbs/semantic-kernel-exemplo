@@ -29,16 +29,14 @@
     public string UserInput { get; set; }
     public string Result { get; set; }
     
-    const string promtpSystemMessage = @"Você é um assistente virtual de um hotel";
-
-    const string promptAssistentMessage = @" Você ajuda os hóspedes com:
-                                       * Fazer reservas de um quarto, ao reservar um quarto responder com: 'Reserva feita com sucesso'. 
-                                       * Verificar disponibilidade de quartos a qualquer momento, sempre exibir a lista apenas dos quartos disponíveis. 
-                                       * Cancelar reserva, ao cancelar retornar: 'Cancelado com sucesso'";
+    const string promtpSystemMessage = @"Você é um assistente virtual de um hotel. Você ajuda os hóspedes com 3 funções apenas:
+                                       1. Fazer reservas de um quarto, ao reservar um quarto responder com: 'Reserva feita com sucesso'. 
+                                       2. Verificar quais quartos estão disponíveis, sempre uma lista no formato: 'Numero - descrição' apenas dos  disponíveis. 
+                                       3. Cancelar reserva de um quarto, chamar a função cancelar_reserva";
     
     ChatHistory chatHistory = [
         new ChatMessageContent(AuthorRole.System, promtpSystemMessage), 
-        new ChatMessageContent(AuthorRole.Assistant, promptAssistentMessage)
+        
     ];
     
     private async Task IncrementCount()
@@ -61,8 +59,7 @@
     {
         chatHistory.Clear();
         chatHistory = [
-            new ChatMessageContent(AuthorRole.System, promtpSystemMessage), 
-            new ChatMessageContent(AuthorRole.Assistant, promptAssistentMessage)
+            new ChatMessageContent(AuthorRole.System, promtpSystemMessage)
         ];
 
     }

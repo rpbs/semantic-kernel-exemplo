@@ -22,7 +22,7 @@ public class BookingPlugin
     } 
     
     [KernelFunction("cancelar_reserva"), Description("Cancelar reserva de um quarto")]
-    public void Cancelar([Description("Número do quarto")] string numero)
+    public void Cancelar([Description("Número do quarto com reserva")] string numero)
     {
         quartos.FirstOrDefault(x => x.Numero == numero)!.IsDisponivel = true;
     }     
