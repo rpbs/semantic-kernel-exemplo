@@ -1,2 +1,2 @@
 # semantic-kernel-exemplo
-examplo para apresentção na autoglass
+exemplo para apresentção na autoglass
